@@ -1,81 +1,100 @@
 import { Button } from "@/components/ui/button";
-import { MessageSquare, ArrowRight } from "lucide-react";
-import logoBlack from "@/assets/logo-black.png";
+import { ArrowRight, Sparkles, Zap, Brain, Rocket } from "lucide-react";
+import logo from "@/assets/logo-white.png";
 
 interface HeroProps {
   onOpenChat: () => void;
 }
 
 const Hero = ({ onOpenChat }: HeroProps) => {
+  const scrollToContact = () => {
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
-    <section className="min-h-screen flex flex-col items-center justify-center px-4 py-20 relative overflow-hidden">
-      {/* Animated background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-muted -z-10" />
-      <div className="absolute top-20 right-20 w-96 h-96 bg-gradient-brand opacity-20 blur-3xl rounded-full animate-pulse" />
-      <div className="absolute bottom-20 left-20 w-80 h-80 bg-gradient-brand opacity-10 blur-3xl rounded-full animate-pulse delay-1000" />
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-red/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-brand-orange/10 rounded-full blur-3xl animate-pulse animation-delay-400" />
+      </div>
 
-      <div className="max-w-5xl mx-auto text-center space-y-8 relative z-10">
-        {/* Logo */}
-        <div className="flex justify-center mb-8 animate-fade-in">
-          <img 
-            src={logoBlack} 
-            alt="BAS3 AI" 
-            className="h-16 md:h-20 w-auto"
-          />
-        </div>
-
-        {/* Main headline */}
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight animate-slide-up">
-          Infraestrutura de IA
-          <br />
-          <span className="bg-gradient-brand bg-clip-text text-transparent">
-            Pronta para Escalar
-          </span>
-        </h1>
-
-        {/* Subheadline */}
-        <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto animate-slide-up animation-delay-200">
-          Transforme sua empresa com infraestrutura de inteligência artificial de ponta. 
-          Escalável, segura e pronta para o futuro.
-        </p>
-
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8 animate-slide-up animation-delay-400">
-          <Button 
-            size="lg" 
-            onClick={onOpenChat}
-            className="bg-gradient-brand hover:opacity-90 text-white border-0 shadow-glow transition-all duration-300 hover:scale-105 text-base md:text-lg px-8 py-6 group"
-          >
-            <MessageSquare className="mr-2 h-5 w-5" />
-            Fale com nossa IA
-            <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-          </Button>
-        </div>
-
-        {/* Trust indicators */}
-        <div className="pt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto animate-fade-in animation-delay-600">
-          <div className="space-y-2">
-            <div className="text-3xl md:text-4xl font-bold bg-gradient-brand bg-clip-text text-transparent">
-              99.9%
-            </div>
-            <div className="text-sm text-muted-foreground">
-              Uptime garantido
-            </div>
+      <div className="container relative z-10 px-4 py-20 md:py-32">
+        <div className="max-w-5xl mx-auto text-center space-y-8">
+          {/* Logo */}
+          <div className="animate-fade-in">
+            <img 
+              src={logo} 
+              alt="BAS3 Logo" 
+              className="h-20 md:h-32 mx-auto mb-8 drop-shadow-glow"
+            />
           </div>
-          <div className="space-y-2">
-            <div className="text-3xl md:text-4xl font-bold bg-gradient-brand bg-clip-text text-transparent">
-              &lt;100ms
-            </div>
-            <div className="text-sm text-muted-foreground">
-              Latência média
-            </div>
+
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-brand/10 border border-accent/20 animate-fade-in animation-delay-200">
+            <Sparkles className="h-4 w-4 text-accent" />
+            <span className="text-sm font-medium text-foreground">
+              Infraestrutura de IA de Última Geração
+            </span>
           </div>
-          <div className="space-y-2">
-            <div className="text-3xl md:text-4xl font-bold bg-gradient-brand bg-clip-text text-transparent">
-              24/7
+
+          {/* Headline */}
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight animate-fade-in animation-delay-400">
+            Transforme sua Empresa com{" "}
+            <span className="bg-gradient-brand bg-clip-text text-transparent">
+              Inteligência Artificial
+            </span>
+          </h1>
+
+          {/* Subheadline */}
+          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto animate-fade-in animation-delay-600">
+            Fornecemos infraestrutura completa de IA para empresas que querem liderar o futuro. 
+            Automatize processos, tome decisões inteligentes e escale sem limites.
+          </p>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in animation-delay-600">
+            <Button
+              size="lg"
+              onClick={onOpenChat}
+              className="bg-gradient-brand hover:opacity-90 text-white border-0 shadow-glow text-base px-8 py-6 h-auto group"
+            >
+              <Brain className="h-5 w-5 mr-2 group-hover:animate-pulse" />
+              Converse com Nossa IA
+              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={scrollToContact}
+              className="border-accent text-foreground hover:bg-accent/10 text-base px-8 py-6 h-auto"
+            >
+              Agendar Demonstração
+            </Button>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-6 md:gap-12 max-w-3xl mx-auto pt-12 animate-fade-in animation-delay-600">
+            <div className="text-center">
+              <div className="flex items-center justify-center mb-2">
+                <Zap className="h-6 w-6 text-accent" />
+              </div>
+              <div className="text-2xl md:text-4xl font-bold bg-gradient-brand bg-clip-text text-transparent">99.9%</div>
+              <p className="text-sm text-muted-foreground mt-1">Uptime</p>
             </div>
-            <div className="text-sm text-muted-foreground">
-              Suporte dedicado
+            <div className="text-center">
+              <div className="flex items-center justify-center mb-2">
+                <Brain className="h-6 w-6 text-accent" />
+              </div>
+              <div className="text-2xl md:text-4xl font-bold bg-gradient-brand bg-clip-text text-transparent">24/7</div>
+              <p className="text-sm text-muted-foreground mt-1">Suporte IA</p>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center mb-2">
+                <Rocket className="h-6 w-6 text-accent" />
+              </div>
+              <div className="text-2xl md:text-4xl font-bold bg-gradient-brand bg-clip-text text-transparent">10x</div>
+              <p className="text-sm text-muted-foreground mt-1">Mais Rápido</p>
             </div>
           </div>
         </div>

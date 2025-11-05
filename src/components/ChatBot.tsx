@@ -19,9 +19,16 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Olá! 👋 Sou o assistente virtual da BAS3. Como posso ajudar você a transformar sua empresa com IA?"
+      content: "Olá! 👋 Sou a IA da BAS3, sua assistente especializada em infraestrutura de IA para empresas.\n\nPosso ajudar você com:\n• Análise de processos para automação\n• Casos de uso de IA para seu negócio\n• Demonstrações técnicas\n• Orçamentos personalizados\n• Agendamento de consultorias\n\nComo posso transformar sua empresa hoje?"
     }
   ]);
+
+  const quickQuestions = [
+    "Quais casos de uso de IA vocês oferecem?",
+    "Quanto tempo leva a implementação?",
+    "Como funciona o processo?",
+    "Quero agendar uma demonstração"
+  ];
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -171,7 +178,26 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
         </div>
 
         {/* Input */}
-        <div className="p-4 md:p-6 border-t border-border bg-background">
+        <div className="p-4 md:p-6 border-t border-border bg-background space-y-3">
+          {/* Quick Questions */}
+          {messages.length === 1 && (
+            <div className="flex flex-wrap gap-2">
+              {quickQuestions.map((question, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setInput(question);
+                    setTimeout(() => sendMessage(), 100);
+                  }}
+                  className="px-3 py-1.5 text-xs rounded-full bg-muted hover:bg-accent/10 hover:text-accent border border-border hover:border-accent/50 transition-all"
+                  disabled={isLoading}
+                >
+                  {question}
+                </button>
+              ))}
+            </div>
+          )}
+          
           <div className="flex gap-2">
             <Input
               value={input}
