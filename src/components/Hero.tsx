@@ -1,15 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Zap, Brain, Rocket } from "lucide-react";
-import logo from "@/assets/logo-white.png";
+import logo from "@/assets/logo-black.png";
 
 interface HeroProps {
   onOpenChat: () => void;
+  onOpenDemo: () => void;
 }
 
-const Hero = ({ onOpenChat }: HeroProps) => {
-  const scrollToContact = () => {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-  };
+const Hero = ({ onOpenChat, onOpenDemo }: HeroProps) => {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted">
@@ -66,7 +64,7 @@ const Hero = ({ onOpenChat }: HeroProps) => {
             <Button
               size="lg"
               variant="outline"
-              onClick={scrollToContact}
+              onClick={onOpenDemo}
               className="border-accent text-foreground hover:bg-accent/10 text-base px-8 py-6 h-auto"
             >
               Agendar Demonstração

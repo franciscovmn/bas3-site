@@ -9,13 +9,18 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import ChatBot from "@/components/ChatBot";
 import FloatingChatButton from "@/components/FloatingChatButton";
+import DemoDialog from "@/components/DemoDialog";
 
 const Index = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isDemoOpen, setIsDemoOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
-      <Hero onOpenChat={() => setIsChatOpen(true)} />
+      <Hero 
+        onOpenChat={() => setIsChatOpen(true)} 
+        onOpenDemo={() => setIsDemoOpen(true)}
+      />
       <Features />
       <HowItWorks />
       <UseCases />
@@ -25,6 +30,7 @@ const Index = () => {
       <Footer />
       
       <ChatBot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+      <DemoDialog isOpen={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
       
       {!isChatOpen && <FloatingChatButton onClick={() => setIsChatOpen(true)} />}
     </div>

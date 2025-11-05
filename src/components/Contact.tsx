@@ -17,7 +17,7 @@ const Contact = () => {
   };
 
   return (
-    <section className="py-20 px-4 relative">
+    <section id="contact" className="py-20 px-4 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/30 to-background -z-10" />
       
       <div className="max-w-4xl mx-auto">
