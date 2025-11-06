@@ -109,7 +109,7 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
     <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
       <Card className="w-full md:max-w-2xl h-[100vh] md:h-[80vh] flex flex-col bg-background border-border md:rounded-2xl rounded-none shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 md:p-6 border-b border-border bg-gradient-brand">
+        <div className="flex items-center justify-between p-4 md:p-6 border-b border-border bg-gradient-brand md:rounded-t-2xl"> {/* <-- ADICIONEI md:rounded-t-2xl */}
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur">
               <Bot className="h-6 w-6 text-white" />
@@ -178,7 +178,7 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
         </div>
 
         {/* Input */}
-        <div className="p-4 md:p-6 border-t border-border bg-background space-y-3">
+        <div className="p-4 md:p-6 border-t border-border bg-background space-y-3 md:rounded-b-2xl"> {/* <-- ADICIONEI md:rounded-b-2xl */}
           {/* Quick Questions */}
           {messages.length === 1 && (
             <div className="flex flex-wrap gap-2">

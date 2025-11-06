@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import HowItWorks from "@/components/HowItWorks";
@@ -16,24 +17,27 @@ const Index = () => {
   const [isDemoOpen, setIsDemoOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background">
-      <Hero 
-        onOpenChat={() => setIsChatOpen(true)} 
-        onOpenDemo={() => setIsDemoOpen(true)}
-      />
-      <Features />
-      <HowItWorks />
-      <UseCases />
-      <FAQ />
-      <CTASection onOpenChat={() => setIsChatOpen(true)} />
-      <Contact />
-      <Footer />
-      
-      <ChatBot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
-      <DemoDialog isOpen={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
-      
-      {!isChatOpen && <FloatingChatButton onClick={() => setIsChatOpen(true)} />}
-    </div>
+    <>
+      <Header />
+      <div className="min-h-screen bg-background">
+        <Hero 
+          onOpenChat={() => setIsChatOpen(true)} 
+          onOpenDemo={() => setIsDemoOpen(true)}
+        />
+        <Features />
+        <HowItWorks />
+        <UseCases />
+        <FAQ />
+        <CTASection onOpenChat={() => setIsChatOpen(true)} />
+        <Contact />
+        <Footer />
+        
+        <ChatBot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+        <DemoDialog isOpen={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
+        
+        {!isChatOpen && <FloatingChatButton onClick={() => setIsChatOpen(true)} />}
+      </div>
+    </>
   );
 };
 
