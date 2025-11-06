@@ -1,5 +1,5 @@
 import { Mail, Phone, Linkedin, Instagram } from "lucide-react";
-import logo from "@/assets/logo-white.png";
+import logoWhite from "@/assets/logo-black.png"; // Importe a logo branca com um nome diferente
 
 const Footer = () => {
   return (
@@ -8,7 +8,7 @@ const Footer = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div className="space-y-4">
-            <img src={logo} alt="BAS3 Logo" className="h-12" />
+            <img src={logoWhite} alt="BAS3 Logo" className="h-12" />
             <p className="text-sm text-muted-foreground">
               Infraestrutura de IA completa para empresas que querem liderar o futuro.
             </p>
@@ -76,9 +76,18 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom */}
-        <div className="pt-8 border-t border-border text-center text-sm text-muted-foreground">
+        {/* Bottom (Modificado) */}
+        <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center text-center md:text-left text-sm text-muted-foreground gap-4">
           <p>&copy; {new Date().getFullYear()} BAS3. Todos os direitos reservados.</p>
+          <nav className="flex flex-wrap justify-center gap-4 md:gap-6">
+            {/* O link "Casos de Uso" já está na coluna "Empresa" acima, linkando para #use-cases */}
+            <a href="/lgpd" className="hover:text-accent transition-colors">
+              LGPD
+            </a>
+            <a href="/politica-de-privacidade" className="hover:text-accent transition-colors">
+              Política de Privacidade
+            </a>
+          </nav>
         </div>
       </div>
     </footer>

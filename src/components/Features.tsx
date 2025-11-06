@@ -5,7 +5,7 @@ const features = [
   {
     icon: Zap,
     title: "Deploy Instantâneo",
-    description: "Configure e implante modelos de IA em minutos, não em semanas. Nossa plataforma automatiza todo o processo."
+    description: "Configure e implante modelos de IA em semanas. Nossa plataforma automatiza todo o processo."
   },
   {
     icon: Shield,

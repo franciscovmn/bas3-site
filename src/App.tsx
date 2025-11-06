@@ -5,6 +5,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import PoliticaPrivacidade from "./pages/PoliticaPrivacidade"; // <-- Adicionar
+import LGPD from "./pages/LGPD"; // <-- Adicionar
+import ScrollToTop from "./components/ScrollToTop"; // <-- Adicionar
 
 const queryClient = new QueryClient();
 
@@ -14,8 +17,14 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop /> {/* <-- Adicionar */}
         <Routes>
           <Route path="/" element={<Index />} />
+          
+          {/* --- Rotas das Páginas Legais --- */}
+          <Route path="/politica-de-privacidade" element={<PoliticaPrivacidade />} /> {/* <-- Adicionar */}
+          <Route path="/lgpd" element={<LGPD />} /> {/* <-- Adicionar */}
+
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

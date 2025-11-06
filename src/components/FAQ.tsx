@@ -24,7 +24,7 @@ const faqs = [
   },
   {
     question: "Vocês oferecem integração com sistemas existentes?",
-    answer: "Sim! Nossas APIs são flexíveis e se integram facilmente com ERPs, CRMs e outras ferramentas que sua empresa já utiliza. Fazemos toda a integração para você."
+    answer: "Precisamos primeiro entender sua infraestrutura atual. Nossas soluções são altamente flexíveis e podem ser integradas com a maioria dos sistemas empresariais via APIs ( lembrando que existem sistemas que não permitem integrações externas."
   },
   {
     question: "Como funciona o suporte e a manutenção?",

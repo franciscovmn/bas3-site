@@ -4,7 +4,7 @@ const steps = [
   {
     icon: MessageSquare,
     title: "1. Análise de Necessidades",
-    description: "Nossa IA analisa seus processos e identifica oportunidades de automação e otimização."
+    description: "Analisamos seus processos e identificamos oportunidades de automação e otimização."
   },
   {
     icon: Cpu,
@@ -14,7 +14,7 @@ const steps = [
   {
     icon: Rocket,
     title: "3. Integração Rápida",
-    description: "Deploy em dias, não meses. Sua infraestrutura de IA pronta para escalar."
+    description: "Deploy em semanas. Sua infraestrutura de IA pronta para escalar."
   },
   {
     icon: BarChart,
