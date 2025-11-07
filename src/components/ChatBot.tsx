@@ -53,7 +53,7 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
 
     try {
       const response = await fetch(
-        "https://bossycaracal-n8n.cloudfy.cloud/webhook/57a4dce2-6183-49fa-8330-0971d014230a",
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`,
         {
           method: "POST",
           headers: {
@@ -64,19 +64,36 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
       );
 
       if (!response.ok) {
+        const errorText = await response.text();
+        
+        if (response.status === 429) {
+          setMessages(prev => [
+            ...prev,
+            { 
+              role: "assistant", 
+              content: "Desculpe, estamos com muitas requisições no momento. Tente novamente em instantes."
+            }
+          ]);
+          setIsLoading(false);
+          return;
+        }
+        
+        if (response.status === 402) {
+          setMessages(prev => [
+            ...prev,
+            { 
+              role: "assistant", 
+              content: "Serviço temporariamente indisponível. Entre em contato pelo WhatsApp ou email."
+            }
+          ]);
+          setIsLoading(false);
+          return;
+        }
+        
         throw new Error("Falha na comunicação");
       }
 
-      // O n8n retorna texto puro, não JSON
       const text = await response.text();
-      
-      console.log("=== DEBUG N8N ===");
-      console.log("Status:", response.status);
-      console.log("Headers:", response.headers);
-      console.log("Resposta recebida (tipo):", typeof text);
-      console.log("Resposta recebida (conteúdo):", text);
-      console.log("Resposta recebida (length):", text.length);
-      console.log("================");
       
       setMessages(prev => [
         ...prev,
