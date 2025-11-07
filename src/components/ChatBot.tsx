@@ -70,6 +70,14 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
       // O n8n retorna texto puro, não JSON
       const text = await response.text();
       
+      console.log("=== DEBUG N8N ===");
+      console.log("Status:", response.status);
+      console.log("Headers:", response.headers);
+      console.log("Resposta recebida (tipo):", typeof text);
+      console.log("Resposta recebida (conteúdo):", text);
+      console.log("Resposta recebida (length):", text.length);
+      console.log("================");
+      
       setMessages(prev => [
         ...prev,
         { 
