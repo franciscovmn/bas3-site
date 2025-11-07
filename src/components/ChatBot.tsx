@@ -69,11 +69,34 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
 
       const data = await response.json();
       
+      // Log para debug - ver estrutura da resposta
+      console.log("Resposta do n8n:", data);
+      
+      // Tenta diferentes formatos de resposta que o n8n pode retornar
+      let assistantMessage = "";
+      
+      if (typeof data === 'string') {
+        assistantMessage = data;
+      } else if (data.output) {
+        assistantMessage = data.output;
+      } else if (data.response) {
+        assistantMessage = data.response;
+      } else if (data.message) {
+        assistantMessage = data.message;
+      } else if (data.text) {
+        assistantMessage = data.text;
+      } else {
+        // Se nenhum campo conhecido, tenta stringificar
+        assistantMessage = JSON.stringify(data);
+      }
+      
+      console.log("Mensagem extraída:", assistantMessage);
+      
       setMessages(prev => [
         ...prev,
         { 
           role: "assistant", 
-          content: data.response || data.message || "Desculpe, não consegui processar sua mensagem. Tente novamente."
+          content: assistantMessage || "Desculpe, não consegui processar sua mensagem. Tente novamente."
         }
       ]);
     } catch (error) {
