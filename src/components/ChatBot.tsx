@@ -53,7 +53,7 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`,
+        "https://bossycaracal-n8n.cloudfy.cloud/webhook/57a4dce2-6183-49fa-8330-0971d014230a",
         {
           method: "POST",
           headers: {
@@ -64,32 +64,6 @@ const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
       );
 
       if (!response.ok) {
-        const errorText = await response.text();
-        
-        if (response.status === 429) {
-          setMessages(prev => [
-            ...prev,
-            { 
-              role: "assistant", 
-              content: "Desculpe, estamos com muitas requisições no momento. Tente novamente em instantes."
-            }
-          ]);
-          setIsLoading(false);
-          return;
-        }
-        
-        if (response.status === 402) {
-          setMessages(prev => [
-            ...prev,
-            { 
-              role: "assistant", 
-              content: "Serviço temporariamente indisponível. Entre em contato pelo WhatsApp ou email."
-            }
-          ]);
-          setIsLoading(false);
-          return;
-        }
-        
         throw new Error("Falha na comunicação");
       }
 
