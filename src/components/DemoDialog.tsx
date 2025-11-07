@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client"; // 1. IMPORTADO O CLIENT SUPABASE
 
 interface DemoDialogProps {
   isOpen: boolean;
@@ -44,18 +45,19 @@ const DemoDialog = ({ isOpen, onClose }: DemoDialogProps) => {
         return;
       }
 
-      // Enviar email
-      const subject = encodeURIComponent(`Nova Solicitação de Demonstração - ${formData.company}`);
-      const body = encodeURIComponent(
-        `Nome: ${formData.name}\n` +
-        `Email: ${formData.email}\n` +
-        `Empresa: ${formData.company}\n` +
-        `Telefone: ${formData.phone || "Não informado"}\n\n` +
-        `Principal Desafio:\n${formData.problem}`
-      );
-      
-      window.open(`mailto:bas3automacao@gmail.com?subject=${subject}&body=${body}`, '_blank');
+      // --- INÍCIO DA ALTERAÇÃO (Chamada da Supabase Function) ---
+      // 2. Chama a função de backend 'send-demo-email'
+      const { error } = await supabase.functions.invoke('send-demo-email', {
+        body: formData, // Envia os dados do formulário
+      });
 
+      // 3. Se a função retornar um erro, lança ele para o catch
+      if (error) {
+        throw new Error(error.message);
+      }
+      // --- FIM DA ALTERAÇÃO ---
+
+      // 4. Mostra o toast de sucesso
       toast({
         title: "Solicitação Enviada!",
         description: "Entraremos em contato em breve para agendar sua demonstração.",
@@ -71,9 +73,10 @@ const DemoDialog = ({ isOpen, onClose }: DemoDialogProps) => {
       });
       onClose();
     } catch (error) {
+      console.error("Erro ao enviar solicitação:", error); // Loga o erro
       toast({
         title: "Erro ao enviar",
-        description: "Por favor, tente novamente ou entre em contato diretamente.",
+        description: "Não foi possível enviar sua solicitação. Por favor, tente novamente ou entre em contato diretamente.",
         variant: "destructive",
       });
     } finally {
@@ -162,6 +165,7 @@ const DemoDialog = ({ isOpen, onClose }: DemoDialogProps) => {
               disabled={isSubmitting}
               className="flex-1 bg-gradient-brand hover:opacity-90"
             >
+              {/* 5. Texto do botão atualizado */}
               {isSubmitting ? "Enviando..." : "Enviar Solicitação"}
             </Button>
           </div>
