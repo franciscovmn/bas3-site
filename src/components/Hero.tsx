@@ -1,6 +1,6 @@
+// src/components/Hero.tsx
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Zap, Brain, Rocket } from "lucide-react";
-import logo from "@/assets/logo-black.png";
 
 interface HeroProps {
   onOpenChat: () => void;
@@ -10,22 +10,19 @@ interface HeroProps {
 const Hero = ({ onOpenChat, onOpenDemo }: HeroProps) => {
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted pt-32">
+    // Este padding (pt-28) é necessário para dar espaço ao navbar
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted pt-28"> 
+      {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-red/10 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-brand-orange/10 rounded-full blur-3xl animate-pulse animation-delay-400" />
       </div>
 
-      <div className="container relative z-10 px-4 py-20 md:py-32">
+      {/* AQUI: Mudei de "py-20 md:py-32" para "pb-20 md:pb-32" */}
+      <div className="container relative z-10 px-4 pb-20 md:pb-32">
         <div className="max-w-5xl mx-auto text-center space-y-8">
-          <div className="animate-fade-in">
-            <img 
-              src={logo} 
-              alt="BAS3 Logo" 
-              className="h-20 md:h-32 mx-auto mb-8 drop-shadow-glow"
-            />
-          </div>
-
+          
+          {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-brand/10 border border-accent/20 animate-fade-in animation-delay-200">
             <Sparkles className="h-4 w-4 text-accent" />
             <span className="text-sm font-medium text-foreground">
@@ -33,6 +30,7 @@ const Hero = ({ onOpenChat, onOpenDemo }: HeroProps) => {
             </span>
           </div>
 
+          {/* Headline */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight animate-fade-in animation-delay-400">
             Transforme sua Empresa com{" "}
             <span className="bg-gradient-brand bg-clip-text text-transparent">
@@ -40,11 +38,13 @@ const Hero = ({ onOpenChat, onOpenDemo }: HeroProps) => {
             </span>
           </h1>
 
+          {/* Subheadline */}
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto animate-fade-in animation-delay-600">
             Fornecemos infraestrutura completa de IA para empresas que querem liderar o futuro. 
             Automatize processos, tome decisões inteligentes e escale sem limites.
           </p>
 
+          {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in animation-delay-600">
             <Button
               size="lg"
@@ -65,6 +65,7 @@ const Hero = ({ onOpenChat, onOpenDemo }: HeroProps) => {
             </Button>
           </div>
 
+          {/* Stats */}
           <div className="grid grid-cols-3 gap-6 md:gap-12 max-w-3xl mx-auto pt-12 animate-fade-in animation-delay-600">
             <div className="text-center">
               <div className="flex items-center justify-center mb-2">
