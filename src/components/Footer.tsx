@@ -4,8 +4,8 @@ import logoWhite from "@/assets/logo-black.png"; // Importe a logo branca com um
 const Footer = () => {
   return (
     <footer className="bg-gradient-to-br from-background to-muted/30 text-foreground border-t border-border">
-      <div className="container px-4 py-12 md:py-16">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+      <div className="container px-4 py-12 md:py-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-2">
           {/* Brand */}
           <div className="space-y-4">
             <img src={logoWhite} alt="BAS3 Logo" className="h-12" />
@@ -77,17 +77,8 @@ const Footer = () => {
         </div>
 
         {/* Bottom (Modificado) */}
-        <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center text-center md:text-left text-sm text-muted-foreground gap-4">
+        <div className="pt-2 border-t border-border flex flex-col items-center text-center text-sm text-muted-foreground">          
           <p>&copy; {new Date().getFullYear()} BAS3. Todos os direitos reservados.</p>
-          <nav className="flex flex-wrap justify-center gap-4 md:gap-6">
-            {/* O link "Casos de Uso" já está na coluna "Empresa" acima, linkando para #use-cases */}
-            <a href="/lgpd" className="hover:text-accent transition-colors">
-              LGPD
-            </a>
-            <a href="/politica-de-privacidade" className="hover:text-accent transition-colors">
-              Política de Privacidade
-            </a>
-          </nav>
         </div>
       </div>
     </footer>

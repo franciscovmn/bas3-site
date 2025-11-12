@@ -22,8 +22,9 @@ const App = () => (
           <Route path="/" element={<Index />} />
           
           {/* --- Rotas das Páginas Legais --- */}
-          <Route path="/politica-de-privacidade" element={<PoliticaPrivacidade />} /> {/* <-- Adicionar */}
-          <Route path="/lgpd" element={<LGPD />} /> {/* <-- Adicionar */}
+          {/* <Route path="/politica-de-privacidade" element={<PoliticaPrivacidade />} />
+          <Route path="/lgpd" element={<LGPD />} />
+           */}
 
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
