@@ -1,0 +1,16 @@
+---
+deployment:
+  tasks:
+    # Exporta o caminho de implantação.
+    # MUDE /home/seu_usuario_cpanel/public_html/ PARA O SEU CAMINHO REAL
+    - export DEPLOYPATH=/home/seu_usuario_cpanel/public_html/
+
+    # Instala as dependências do Node.js
+    - /bin/npm install
+
+    # Roda o script de build (que cria a pasta 'dist')
+    - /bin/npm run build
+
+    # Copia o conteúdo da pasta 'dist' para o public_html
+    # Usamos rsync para garantir que tudo (incluindo arquivos ocultos) seja copiado
+    - /bin/rsync -av --delete dist/ $DEPLOYPATH
