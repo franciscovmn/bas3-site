@@ -123,7 +123,7 @@ const PoliticaPrivacidade = () => {
             <p>
               Se você tiver dúvidas ou comentários sobre esta Política de
               Privacidade, entre em contato conosco pelo email:{" "}
-              <strong>bas3automacao@gmail.com</strong>.
+              <strong>contato@somosbas3.com.br</strong>.
             </p>
           </article>
         </div>

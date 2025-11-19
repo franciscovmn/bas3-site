@@ -2,10 +2,10 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 // --- IMPORTANTE: MUDE ISSO ---
 // Este email DEVE ser um "Verified Sender" na sua conta SendGrid.
-const EMAIL_FROM = "bas3automacao@gmail.com"; 
+const EMAIL_FROM = "contato@somosbas3.com.br"; 
 // ------------------------------
 
-const EMAIL_TO = "bas3automacao@gmail.com";
+const EMAIL_TO = "contato@somosbas3.com.br";
 const FROM_NAME = "BAS3 Demo Request";
 
 const corsHeaders = {

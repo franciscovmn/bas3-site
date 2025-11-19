@@ -72,7 +72,7 @@ const LGPD = () => {
               Para exercer qualquer um dos seus direitos, ou se tiver dúvidas
               sobre como seus dados são tratados, entre em contato com nosso
               Encarregado de Proteção de Dados (DPO) através do email:{" "}
-              <strong>bas3automacao@gmail.com</strong>.
+              <strong>contato@somosbas3.com.br</strong>.
             </p>
             
             <h2>Mais Informações</h2>

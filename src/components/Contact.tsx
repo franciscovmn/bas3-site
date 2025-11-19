@@ -3,7 +3,7 @@ import { Mail, MessageCircle } from "lucide-react";
 
 const Contact = () => {
   const whatsappNumber = "5583999007432";
-  const email = "bas3automacao@gmail.com";
+  const email = "contato@somosbas3.com.br";
 
   const handleWhatsApp = () => {
     const message = encodeURIComponent("Olá! Gostaria de saber mais sobre a infraestrutura de IA da BAS3.");
