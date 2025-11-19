@@ -45,19 +45,16 @@ const DemoDialog = ({ isOpen, onClose }: DemoDialogProps) => {
         return;
       }
 
-      // --- INÍCIO DA ALTERAÇÃO (Chamada da Supabase Function) ---
-      // 2. Chama a função de backend 'send-demo-email'
-      const { error } = await supabase.functions.invoke('send-demo-email', {
-        body: formData, // Envia os dados do formulário
+      // Chama a função de backend 'send-demo-email' (a função lida com envio via Resend)
+      const { data, error } = await supabase.functions.invoke('send-demo-email', {
+        body: formData,
       });
 
-      // 3. Se a função retornar um erro, lança ele para o catch
       if (error) {
-        throw new Error(error.message);
+        throw error;
       }
-      // --- FIM DA ALTERAÇÃO ---
 
-      // 4. Mostra o toast de sucesso
+      // Mostra o toast de sucesso
       toast({
         title: "Solicitação Enviada!",
         description: "Entraremos em contato em breve para agendar sua demonstração.",
@@ -73,7 +70,7 @@ const DemoDialog = ({ isOpen, onClose }: DemoDialogProps) => {
       });
       onClose();
     } catch (error) {
-      console.error("Erro ao enviar solicitação:", error); // Loga o erro
+      console.error("Erro ao enviar solicitação:", error);
       toast({
         title: "Erro ao enviar",
         description: "Não foi possível enviar sua solicitação. Por favor, tente novamente ou entre em contato diretamente.",
