@@ -1,8 +1,0 @@
-# Mude o project_id para o correto
-project_id = "llbvmnttrjrxvjenjbmo"
-
-[functions.chat]
-verify_jwt = false
-
-[functions.send-demo-email]
-verify_jwt = false

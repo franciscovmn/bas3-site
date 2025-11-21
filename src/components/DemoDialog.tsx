@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client"; // 1. IMPORTADO O CLIENT SUPABASE
+// Importação do Supabase removida
 
 interface DemoDialogProps {
   isOpen: boolean;
@@ -34,7 +34,7 @@ const DemoDialog = ({ isOpen, onClose }: DemoDialogProps) => {
     setIsSubmitting(true);
 
     try {
-      // Validação básica
+      // Validação
       if (!formData.name || !formData.email || !formData.company || !formData.problem) {
         toast({
           title: "Erro",
@@ -45,22 +45,25 @@ const DemoDialog = ({ isOpen, onClose }: DemoDialogProps) => {
         return;
       }
 
-      // Chama a função de backend 'send-demo-email' (a função lida com envio via Resend)
-      const { data, error } = await supabase.functions.invoke('send-demo-email', {
-        body: formData,
+      // Envia para o arquivo PHP na raiz do seu site
+      const response = await fetch('/send-email.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
 
-      if (error) {
-        throw error;
+      if (!response.ok) {
+        throw new Error("Erro na comunicação com o servidor.");
       }
 
-      // Mostra o toast de sucesso
+      // Sucesso
       toast({
         title: "Solicitação Enviada!",
         description: "Entraremos em contato em breve para agendar sua demonstração.",
       });
 
-      // Limpar formulário e fechar
       setFormData({
         name: "",
         email: "",
@@ -69,11 +72,12 @@ const DemoDialog = ({ isOpen, onClose }: DemoDialogProps) => {
         problem: "",
       });
       onClose();
+      
     } catch (error) {
-      console.error("Erro ao enviar solicitação:", error);
+      console.error("Erro:", error);
       toast({
         title: "Erro ao enviar",
-        description: "Não foi possível enviar sua solicitação. Por favor, tente novamente ou entre em contato diretamente.",
+        description: "Não foi possível enviar sua solicitação. Tente novamente mais tarde.",
         variant: "destructive",
       });
     } finally {
@@ -162,7 +166,6 @@ const DemoDialog = ({ isOpen, onClose }: DemoDialogProps) => {
               disabled={isSubmitting}
               className="flex-1 bg-gradient-brand hover:opacity-90"
             >
-              {/* 5. Texto do botão atualizado */}
               {isSubmitting ? "Enviando..." : "Enviar Solicitação"}
             </Button>
           </div>
