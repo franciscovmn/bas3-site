@@ -1,92 +1,104 @@
 <?php
-// send-email.php
+header('Content-Type: application/json');
 
-// 1. Configuração de CORS (permite que seu React fale com este PHP)
-header("Access-Control-Allow-Origin: *"); // Em produção, troque '*' por 'https://www.somosbas3.com.br'
-header("Access-Control-Allow-Headers: Content-Type");
-header("Content-Type: application/json");
-
-// 2. Tratar requisições OPTIONS (pre-flight do navegador)
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit;
-}
-
-// 3. Apenas aceita POST
+// Permitir somente POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(["error" => "Método não permitido"]);
     exit;
 }
 
-// --- CONFIGURAÇÃO ---
-// COLOQUE SUA CHAVE DO RESEND AQUI DENTRO DAS ASPAS
-$resendApiKey = "re_GfiCxFVH_anEsQJwcRsAV1qL64dienRf9"; 
-$emailTo = "contato@somosbas3.com.br";
-$emailFrom = "BAS3 Site <onboarding@resend.dev>"; // Ou seu domínio verificado no Resend
-// ---------------------
+// Ler JSON do body
+$data = json_decode(file_get_contents('php://input'), true);
 
-// 4. Ler o JSON enviado pelo React
-$input = file_get_contents("php://input");
-$data = json_decode($input, true);
-
-$name = $data['name'] ?? '';
-$email = $data['email'] ?? '';
-$company = $data['company'] ?? '';
-$phone = $data['phone'] ?? '';
-$problem = $data['problem'] ?? '';
-
-// 5. Validação simples
-if (!$name || !$email || !$company || !$problem) {
+// Validação inicial
+if (!$data || !isset($data['email'])) {
     http_response_code(400);
-    echo json_encode(["error" => "Dados incompletos"]);
+    echo json_encode(["error" => "Dados inválidos"]);
     exit;
 }
 
-// 6. Montar o corpo do e-mail (HTML)
-$htmlContent = "
-<div style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
-    <h2>Nova Solicitação de Demo - BAS3</h2>
-    <hr>
-    <p><strong>Nome:</strong> $name</p>
-    <p><strong>Email:</strong> $email</p>
-    <p><strong>Empresa:</strong> $company</p>
-    <p><strong>Telefone:</strong> $phone</p>
-    <br>
-    <h3>Desafio:</h3>
-    <p style='background: #f4f4f4; padding: 15px; border-radius: 5px;'>" . nl2br(htmlspecialchars($problem)) . "</p>
-</div>
-";
+$email = strtolower(trim($data['email']));
 
-// 7. Enviar para o Resend usando cURL
-$url = "https://api.resend.com/emails";
-$postData = json_encode([
-    "from" => $emailFrom,
-    "to" => [$emailTo],
-    "reply_to" => $email,
-    "subject" => "Nova Demo Solicitada: $company",
-    "html" => $htmlContent
-]);
+// -----------------------------
+// CHECAR DUPLICIDADE
+// -----------------------------
+$storagePath = __DIR__ . '/storage/submissions.json';
 
-$ch = curl_init($url);
+// Se o arquivo não existir, cria
+if (!file_exists($storagePath)) {
+    file_put_contents($storagePath, json_encode([]));
+}
+
+// Lê registros existentes
+$submissions = json_decode(file_get_contents($storagePath), true);
+
+// Se e-mail já existir, bloquear
+foreach ($submissions as $entry) {
+    if ($entry['email'] === $email) {
+        echo json_encode([
+            "duplicate" => true,
+            "message" => "Você já enviou uma solicitação anteriormente."
+        ]);
+        exit;
+    }
+}
+
+// Adicionar novo envio ao histórico
+$submissions[] = [
+    "email" => $email,
+    "name" => $data["name"],
+    "company" => $data["company"],
+    "phone" => $data["phone"],
+    "problem" => $data["problem"],
+    "timestamp" => time()
+];
+
+// Salvar no JSON
+file_put_contents($storagePath, json_encode($submissions, JSON_PRETTY_PRINT));
+
+
+// -----------------------------
+// ENVIAR E-MAIL VIA RESEND
+// -----------------------------
+$apiKey = "re_GfiCxFVH_anEsQJwcRsAV1qL64dienRf9"; // <- coloque aqui sua API Key real
+
+$payload = [
+    "from" => "Agendamentos BAS3 <contato@somosbas3.com.br>",
+    "to" => ["contato@somosbas3.com.br"],
+    "subject" => "Novo Agendamento de Demonstração",
+    "html" => "
+        <h2>Novo Pedido de Demonstração</h2>
+        <p><strong>Nome:</strong> {$data['name']}</p>
+        <p><strong>Email:</strong> {$data['email']}</p>
+        <p><strong>Empresa:</strong> {$data['company']}</p>
+        <p><strong>Telefone:</strong> " . ($data['phone'] ?? "Não informado") . "</p>
+        <p><strong>Problema/Necessidade:</strong> {$data['problem']}</p>
+    "
+];
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "https://api.resend.com/emails");
 curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    "Authorization: Bearer $resendApiKey",
+    "Authorization: Bearer $apiKey",
     "Content-Type: application/json"
 ]);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 $response = curl_exec($ch);
 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-$curlError = curl_error($ch);
 curl_close($ch);
 
-// 8. Retornar resposta para o React
-if ($httpCode >= 200 && $httpCode < 300 && !$curlError) {
-    echo json_encode(["success" => true, "data" => json_decode($response)]);
-} else {
+// Se falhou enviar e-mail
+if ($httpCode !== 200 && $httpCode !== 202) {
     http_response_code(500);
-    echo json_encode(["error" => "Falha ao enviar e-mail", "details" => $response, "curl_error" => $curlError]);
+    echo json_encode(["error" => "Falha ao enviar e-mail", "details" => $response]);
+    exit;
 }
+
+// Sucesso
+echo json_encode(["success" => true]);
+exit;
 ?>

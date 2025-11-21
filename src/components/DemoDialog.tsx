@@ -45,33 +45,48 @@ const DemoDialog = ({ isOpen, onClose }: DemoDialogProps) => {
         return;
       }
 
-      // Envia para o arquivo PHP na raiz do seu site
-      const response = await fetch('/send-email.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+    // Envia para o arquivo PHP na raiz do seu site
+    const response = await fetch('/send-email.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
 
-      if (!response.ok) {
-        throw new Error("Erro na comunicação com o servidor.");
-      }
+    const result = await response.json();
 
-      // Sucesso
+    // 🔍 Verifica se o backend detectou envio duplicado
+    if (result.duplicate) {
       toast({
-        title: "Solicitação Enviada!",
-        description: "Entraremos em contato em breve para agendar sua demonstração.",
+        title: "Solicitação já enviada",
+        description: "Nossa equipe já recebeu sua solicitação anteriormente.",
       });
+      setIsSubmitting(false);
+      return;
+    }
 
-      setFormData({
-        name: "",
-        email: "",
-        company: "",
-        phone: "",
-        problem: "",
-      });
-      onClose();
+    // Se houve erro no servidor
+    if (!response.ok) {
+      throw new Error("Erro na comunicação com o servidor.");
+    }
+
+    // Sucesso
+    toast({
+      title: "Solicitação Enviada!",
+      description: "Entraremos em contato em breve para agendar sua demonstração.",
+    });
+
+    setFormData({
+      name: "",
+      email: "",
+      company: "",
+      phone: "",
+      problem: "",
+    });
+
+    onClose();
+
       
     } catch (error) {
       console.error("Erro:", error);
