@@ -1,11 +1,14 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, Bot, RefreshCcw, Sparkles, ChevronDown } from "lucide-react";
+import { Send, Bot, RefreshCcw, Sparkles, ChevronDown, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import FloatingChatButton from "./FloatingChatButton";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+
+// URL DO SEU WEBHOOK
+const N8N_WEBHOOK_URL = "https://bossycaracal-n8n.cloudfy.cloud/webhook/57a4dce2-6183-49fa-8330-0971d014230a";
 
 interface Message {
   role: "user" | "assistant";
@@ -30,12 +33,10 @@ const ChatBot = () => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   
-  // Refs para controle de scroll e foco
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const isMobile = useIsMobile();
 
-  // ROLAGEM AUTOMÁTICA: Sempre que 'messages' mudar, rola para o fim
   useEffect(() => {
     if (scrollRef.current) {
       const scrollContainer = scrollRef.current;
@@ -44,9 +45,8 @@ const ChatBot = () => {
         behavior: "smooth",
       });
     }
-  }, [messages, isOpen]);
+  }, [messages, isOpen, isLoading]);
 
-  // Foco automático no desktop
   useEffect(() => {
     if (isOpen && !isMobile) {
       setTimeout(() => inputRef.current?.focus(), 300);
@@ -61,17 +61,67 @@ const ChatBot = () => {
     setInput("");
     setIsLoading(true);
 
-    // Simulação de resposta (Substituir por chamada real à API)
-    setTimeout(() => {
+    try {
+      const response = await fetch(N8N_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chatInput: text }),
+      });
+
+      if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+
+      // LER A RESPOSTA COMO TEXTO PRIMEIRO (Para evitar erro de JSON inválido)
+      const textData = await response.text();
+      let data;
+      
+      try {
+        data = JSON.parse(textData);
+      } catch {
+        // Se não for JSON, assume que é texto puro enviado pelo n8n
+        data = textData;
+      }
+
+      let aiResponse = "";
+
+      // LÓGICA DE TRATAMENTO ROBUSTA
+      if (Array.isArray(data)) {
+        // CASO 1: n8n retornou um Array [ { output: "..." } ] (Seu caso atual)
+        const firstItem = data[0];
+        if (typeof firstItem === "object") {
+           aiResponse = firstItem.output || firstItem.text || firstItem.message || JSON.stringify(firstItem);
+        } else {
+           aiResponse = String(firstItem);
+        }
+      } else if (typeof data === "object") {
+        // CASO 2: n8n retornou um Objeto { output: "..." }
+        aiResponse = data.output || data.text || data.message || JSON.stringify(data);
+      } else {
+        // CASO 3: n8n retornou Texto Puro "Olá..."
+        aiResponse = String(data);
+      }
+
+      // Limpeza final (remover aspas extras se existirem nas pontas)
+      if (aiResponse.startsWith('"') && aiResponse.endsWith('"')) {
+        aiResponse = aiResponse.slice(1, -1);
+      }
+
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: aiResponse },
+      ]);
+
+    } catch (error) {
+      console.error("Erro no Chatbot:", error);
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          content: "Entendi! Nossa tecnologia personaliza soluções de IA especificamente para esse cenário. Gostaria de ver um caso de uso similar?",
+          content: "Desculpe, tive um problema técnico ao processar sua resposta. Tente novamente.",
         },
       ]);
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -83,7 +133,6 @@ const ChatBot = () => {
       <div
         className={cn(
           "fixed z-[100] transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1)",
-          // MOBILE: Ocupa tela cheia, mas com margem segura
           isMobile 
             ? "inset-0 bg-background/80 backdrop-blur-sm flex flex-col justify-end" 
             : "bottom-24 right-6 w-[380px]",
@@ -97,9 +146,7 @@ const ChatBot = () => {
           isMobile ? "h-[100dvh] w-full rounded-none border-0" : "h-[600px] max-h-[80vh] rounded-2xl"
         )}>
           
-          {/* CABEÇALHO COM IDENTIDADE BAS3 */}
           <div className="relative bg-gradient-brand p-4 shrink-0 shadow-md">
-             {/* Botão de fechar no mobile */}
             {isMobile && (
               <Button 
                 variant="ghost" 
@@ -126,7 +173,6 @@ const ChatBot = () => {
                 </p>
               </div>
               
-              {/* Botão de Reset (Desktop) */}
               {!isMobile && (
                 <Button 
                   variant="ghost" 
@@ -141,7 +187,6 @@ const ChatBot = () => {
             </div>
           </div>
 
-          {/* ÁREA DE MENSAGENS (SCROLLÁVEL) */}
           <div 
             ref={scrollRef}
             className="flex-1 overflow-y-auto p-4 space-y-6 bg-secondary/30 scroll-smooth"
@@ -158,7 +203,7 @@ const ChatBot = () => {
                   className={cn(
                     "max-w-[85%] px-4 py-3 text-sm shadow-sm relative group font-sans leading-relaxed",
                     msg.role === "user"
-                      ? "bg-gradient-brand text-white rounded-2xl rounded-tr-sm" // Identidade Visual Bas3
+                      ? "bg-gradient-brand text-white rounded-2xl rounded-tr-sm"
                       : "bg-white dark:bg-card text-foreground border border-border/50 rounded-2xl rounded-tl-sm"
                   )}
                 >
@@ -170,25 +215,19 @@ const ChatBot = () => {
               </div>
             ))}
 
-            {/* Indicador de Digitação */}
             {isLoading && (
               <div className="flex justify-start animate-fade-in">
-                <div className="bg-white dark:bg-card border border-border px-4 py-4 rounded-2xl rounded-tl-sm shadow-sm flex gap-1 items-center">
-                  <span className="w-2 h-2 bg-brand-orange/60 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                  <span className="w-2 h-2 bg-brand-orange/60 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                  <span className="w-2 h-2 bg-brand-orange/60 rounded-full animate-bounce"></span>
+                <div className="bg-white dark:bg-card border border-border px-4 py-4 rounded-2xl rounded-tl-sm shadow-sm flex gap-2 items-center text-muted-foreground text-xs font-medium">
+                  <Loader2 className="w-3 h-3 animate-spin text-brand-orange" />
+                  Bas3 pensando...
                 </div>
               </div>
             )}
             
-            {/* Espaço extra no final para garantir que a última mensagem não fique colada */}
             <div className="h-2" />
           </div>
 
-          {/* RODAPÉ E INPUT */}
           <div className="p-4 bg-background border-t border-border shrink-0">
-            
-            {/* Chips de Sugestão */}
             {messages.length < 3 && !isLoading && (
               <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-hide -mx-2 px-2 mb-1">
                 {STARTER_QUESTIONS.map((q, i) => (
@@ -210,7 +249,6 @@ const ChatBot = () => {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyPress}
                 placeholder="Digite sua mensagem..."
-                // text-[16px] impede zoom no iOS
                 className="pr-12 h-12 rounded-full bg-secondary/50 border-input focus-visible:ring-brand-orange text-[16px] shadow-inner" 
                 disabled={isLoading}
               />
