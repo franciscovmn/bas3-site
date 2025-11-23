@@ -2,83 +2,71 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 10%;
+    /* BASE DA IDENTIDADE: CREME SUAVE (ao invés de branco puro) */
+    --background: 48 70% 96%; /* #fefbe5 aproximado */
+    --foreground: 210 6% 10%; /* #17191a (Cinza Chumbo) */
 
+    /* Cartões agora são BRANCOS para destacar no fundo Creme */
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
+    --card-foreground: 210 6% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
+    --popover-foreground: 210 6% 10%;
 
-    --primary: 0 0% 10%;
+    --primary: 210 6% 10%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 10%;
+    --secondary: 210 6% 96%; /* Cinza muito claro para contrastar com creme */
+    --secondary-foreground: 210 6% 10%;
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 210 6% 90%;
+    --muted-foreground: 210 4% 45%;
 
-    --accent: 0 100% 50%;
+    --accent: 16 100% 60%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 0 100% 50%;
+    --border: 210 6% 90%;
+    --input: 210 6% 90%;
+    --ring: 16 100% 60%;
 
-    --radius: 1rem;
+    --radius: 0.75rem;
 
-    /* Brand colors */
-    --brand-red: 0 100% 50%;
+    /* Cores da Marca (Fixas) */
     --brand-orange: 16 100% 60%;
-    --brand-black: 0 0% 10%;
-
-    /* Gradient */
+    
+    /* Gradiente Bas3 */
     --gradient-brand: linear-gradient(135deg, hsl(0 100% 50%), hsl(16 100% 60%));
     
-    /* Shadows */
-    --shadow-glow: 0 0 40px hsla(0, 100%, 50%, 0.3);
-    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.08);
+    /* Sombras */
+    --shadow-glow: 0 0 60px -15px hsla(16, 100%, 60%, 0.3);
+    --shadow-card: 0 10px 40px -10px rgba(23, 25, 26, 0.08);
   }
 
   .dark {
-    --background: 0 0% 7%;
-    --foreground: 0 0% 98%;
-
-    --card: 0 0% 10%;
+    --background: 210 6% 7%;
+    --foreground: 48 70% 96%;
+    --card: 210 6% 10%;
     --card-foreground: 0 0% 98%;
-
-    --popover: 0 0% 10%;
+    --popover: 210 6% 10%;
     --popover-foreground: 0 0% 98%;
-
     --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 10%;
-
-    --secondary: 0 0% 15%;
+    --primary-foreground: 210 6% 10%;
+    --secondary: 210 6% 15%;
     --secondary-foreground: 0 0% 98%;
-
-    --muted: 0 0% 15%;
+    --muted: 210 6% 15%;
     --muted-foreground: 0 0% 65%;
-
-    --accent: 0 100% 50%;
+    --accent: 16 100% 60%;
     --accent-foreground: 0 0% 98%;
-
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 0 100% 50%;
+    --border: 210 6% 20%;
+    --input: 210 6% 20%;
+    --ring: 16 100% 60%;
   }
 }
 
@@ -86,49 +74,37 @@ All colors MUST be HSL.
   * {
     @apply border-border;
   }
-
+  html {
+    scroll-behavior: smooth;
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased selection:bg-brand-orange/20 selection:text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
     font-family: "Sora", sans-serif;
+  }
+  
+  /* Títulos com espaçamento de letra apertado (Estilo Moderno) */
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight font-bold;
   }
 }
 
 @layer utilities {
-  .animate-fade-in {
-    animation: fadeIn 0.6s ease-out forwards;
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-brand;
+  }
+  
+  .glass-card {
+    @apply bg-white/60 backdrop-blur-lg border border-white/20 shadow-card;
+  }
+  
+  .animate-fade-up {
+    animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+    transform: translateY(30px);
   }
 
-  .animate-slide-up {
-    animation: slideUp 0.6s ease-out forwards;
-  }
-
-  .animation-delay-200 {
-    animation-delay: 0.2s;
-  }
-
-  .animation-delay-400 {
-    animation-delay: 0.4s;
-  }
-
-  .animation-delay-600 {
-    animation-delay: 0.6s;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
+  @keyframes fadeUp {
     to {
       opacity: 1;
       transform: translateY(0);

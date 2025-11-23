@@ -1,58 +1,49 @@
-import { Zap, Shield, Boxes, Cpu } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Brain, Cpu, LineChart, Lock, Zap, Rocket } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const features = [
-  {
-    icon: Zap,
-    title: "Deploy Instantâneo",
-    description: "Configure e implante modelos de IA em semanas. Nossa plataforma automatiza todo o processo."
-  },
-  {
-    icon: Shield,
-    title: "Segurança Enterprise",
-    description: "Criptografia end-to-end, compliance com LGPD e ISO 27001. Seus dados protegidos com padrões militares."
-  },
-  {
-    icon: Boxes,
-    title: "Escalabilidade Automática",
-    description: "Infraestrutura que cresce com sua demanda. De 10 a 10 milhões de requisições sem configuração manual."
-  },
-  {
-    icon: Cpu,
-    title: "Multi-Model Support",
-    description: "Suporte para GPT, Claude, Gemini, Llama e modelos customizados. Uma API para todos os modelos."
-  }
+  { title: "IA Proprietária", desc: "Modelos treinados exclusivamente nos seus dados.", icon: Brain },
+  { title: "Segurança Enterprise", desc: "Criptografia militar e conformidade LGPD total.", icon: Lock },
+  { title: "Escala Infinita", desc: "Infraestrutura que aguenta picos de qualquer tamanho.", icon: Rocket },
+  { title: "Analytics Preditivo", desc: "Dashboard que prevê o futuro, não só mostra o passado.", icon: LineChart },
+  { title: "Integração ERP", desc: "Conectamos com SAP, Totvs, Salesforce e outros.", icon: Cpu },
+  { title: "Automação Total", desc: "Substitua tarefas manuais por agentes autônomos.", icon: Zap },
 ];
 
 const Features = () => {
   return (
-    <section id="features" className="py-20 px-4 relative">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16 space-y-4">
-          <h2 className="text-3xl md:text-5xl font-bold">
-            Infraestrutura que
-            <span className="bg-gradient-brand bg-clip-text text-transparent"> Impulsiona Inovação</span>
+    <section id="features" className="py-24 relative">
+      {/* Fundo sutil para diferenciar levemente */}
+      <div className="absolute inset-0 bg-white/40 -z-10 skew-y-3 transform origin-top-left scale-110" />
+
+      <div className="container px-4 md:px-6">
+        <div className="text-center mb-16 max-w-3xl mx-auto">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6">
+            Tecnologia <span className="text-gradient">Alien.</span> <br/>
+            Controle Humano.
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Construída para empresas que não podem esperar. Nossa infraestrutura elimina barreiras técnicas.
+          <p className="text-muted-foreground text-lg">
+            A maioria das ferramentas de IA são caixas pretas. A Bas3 é transparente, segura e desenhada para líderes que exigem governança.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature, index) => (
             <Card 
-              key={index}
-              className="p-6 md:p-8 bg-card border-border hover:border-accent/50 transition-all duration-300 hover:shadow-glow group"
+              key={index} 
+              className="border-0 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-glow hover:bg-white transition-all duration-500 group rounded-2xl"
             >
-              <div className="flex flex-col h-full space-y-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-brand flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <feature.icon className="h-6 w-6 text-white" />
+              <CardHeader>
+                <div className="w-12 h-12 rounded-2xl bg-background flex items-center justify-center mb-4 group-hover:scale-110 transition-transform border border-foreground/5">
+                  <feature.icon className="w-6 h-6 text-foreground group-hover:text-brand-orange transition-colors" />
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold">{feature.title}</h3>
-                <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
-                  {feature.description}
+                <CardTitle className="text-xl font-bold">{feature.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground leading-relaxed">
+                  {feature.desc}
                 </p>
-              </div>
+              </CardContent>
             </Card>
           ))}
         </div>

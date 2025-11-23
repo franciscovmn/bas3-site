@@ -1,141 +1,139 @@
-// src/components/Header.tsx
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import logoWhite from "@/assets/logo-white.png";
+import { useState, useEffect } from "react";
+import { Menu, X, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetClose,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Menu, ArrowUpRight } from "lucide-react"; // Removi o X daqui, pois não é mais necessário
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
+import DemoDialog from "./DemoDialog";
+import logoBlack from "../assets/logo-black.png";
 
 const Header = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isDemoOpen, setIsDemoOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const location = useLocation();
 
-  const navLinks = [
-    { href: "#features", label: "Soluções" },
-    { href: "#how-it-works", label: "Como Funciona" },
-    { href: "#use-cases", label: "Casos de Uso" },
-    { href: "#faq", label: "FAQ" },
-  ];
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-  const handleSmoothScroll = (targetId: string) => {
-    setIsMobileMenuOpen(false);
-    
-    const id = targetId.substring(1); 
-    const element = document.getElementById(id);
-    
+  const scrollToSection = (id: string) => {
+    const element = document.querySelector(id);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
+      setIsMobileMenuOpen(false);
     }
   };
 
-  const handleLogoClick = (e: React.MouseEvent) => {
-    setIsMobileMenuOpen(false);
-    if (location.pathname === "/") {
-      e.preventDefault();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  };
+  const navLinks = [
+    { name: "Metodologia", id: "#methodology" },
+    { name: "Atuação", id: "#features" },
+    { name: "Diferenciais", id: "#features" },
+    { name: "FAQ", id: "#faq" },
+  ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 p-4">
-      <div className="container flex h-16 items-center justify-between rounded-full bg-gradient-brand p-4 shadow-lg border border-white/20">
-        <Link 
-          to="/" 
-          className="flex items-center gap-2" 
-          onClick={handleLogoClick}
-        >
-          <img src={logoWhite} alt="BAS3 Logo" className="h-8" />
-        </Link>
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b ${
+        isScrolled
+          ? "bg-background/80 backdrop-blur-xl py-3 border-border/40 shadow-sm"
+          : "bg-transparent py-5 border-transparent"
+      }`}
+    >
+      <div className="container px-4 md:px-6 mx-auto flex items-center justify-between relative">
         
-        <nav className="hidden md:flex items-center gap-6">
+        {/* 1. LOGO (Esquerda) */}
+        <div className="flex items-center gap-2 cursor-pointer z-50" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <img src={logoBlack} alt="Bas3 Logo" className="h-8 w-auto object-contain" />
+        </div>
+
+        {/* 2. NAVEGAÇÃO DESKTOP (Centralizada) */}
+        <nav className="hidden md:flex items-center gap-8 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
           {navLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="text-sm font-medium text-white/80 hover:text-white transition-colors"
-              onClick={(e) => {
-                e.preventDefault();
-                handleSmoothScroll(link.href);
-              }}
+            <button
+              key={link.name}
+              onClick={() => scrollToSection(link.id)}
+              className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors relative group tracking-tight"
             >
-              {link.label}
-            </a>
+              {link.name}
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-brand-orange transition-all group-hover:w-full" />
+            </button>
           ))}
         </nav>
 
-        <div className="hidden md:flex items-center gap-4">
-          <Button
-            size="sm"
-            className="rounded-full bg-white/10 text-white hover:bg-white/20 border border-white/20"
-            onClick={() => handleSmoothScroll("#contact")}
+        {/* 3. AÇÕES (Direita) */}
+        <div className="flex items-center gap-4 z-50">
+          <Button 
+            className="hidden md:flex rounded-full bg-foreground text-background hover:bg-foreground/80 px-6 font-bold shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5"
+            onClick={() => setIsDemoOpen(true)}
           >
-            Contato
-            <ArrowUpRight className="ml-1 h-4 w-4" />
+            Consultoria
           </Button>
-        </div>
 
-        <div className="md:hidden">
-          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-            <SheetTrigger asChild>
-              <Button
-                size="icon"
-                variant="ghost"
-                className="rounded-full text-white hover:bg-white/20 hover:text-white"
+          {/* MENU MOBILE TRIGGER */}
+          <div className="md:hidden">
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="text-foreground hover:bg-secondary/80 active:bg-secondary transition-colors">
+                  <Menu className="h-8 w-8" strokeWidth={2} />
+                </Button>
+              </SheetTrigger>
+              
+              {/* MENU TELA CHEIA (OVERLAY) */}
+              {/* CORREÇÃO: bg-[#fefbe5] força o BEGE. text-[#17191a] força o PRETO/CHUMBO. */}
+              <SheetContent 
+                  side="top" 
+                  className="w-full h-[100dvh] bg-[#fefbe5] border-none p-0 flex flex-col items-center justify-center animate-in fade-in slide-in-from-top-5 duration-300 [&>button:last-child]:hidden"
               >
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Abrir menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="bg-background p-0 w-[80%]">
-              <div className="flex flex-col h-full">
-                
-                {/* Cabeçalho do Menu Mobile (CORRIGIDO) */}
-                <div className="flex items-center justify-between p-4 border-b">
-                  <span className="font-semibold">Menu</span>
-                  {/* O botão 'X' de fechar é adicionado automaticamente pelo SheetContent.
-                      Removi o <SheetClose> manual que estava aqui. */}
-                </div>
-                
-                {/* Links do Menu Mobile */}
-                <nav className="flex flex-col p-4 space-y-2">
-                  {navLinks.map((link) => (
-                    <SheetClose asChild key={link.label}>
-                      <a
-                        href={link.href}
-                        className="px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-muted"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleSmoothScroll(link.href);
-                        }}
-                      >
-                        {link.label}
-                      </a>
-                    </SheetClose>
-                  ))}
-                </nav>
-
-                {/* Botão de Contato (Mobile) */}
-                <div className="mt-auto p-4 border-t">
-                  <SheetClose asChild>
-                    <Button
-                      className="w-full bg-gradient-brand text-white"
-                      onClick={() => handleSmoothScroll("#contact")}
-                    >
-                      Contato
-                      <ArrowUpRight className="ml-1 h-4 w-4" />
-                    </Button>
+                  {/* Botão Fechar */}
+                  <SheetClose className="absolute right-4 top-6 p-2 rounded-full bg-black/5 hover:bg-black/10 text-[#17191a] transition-colors cursor-pointer z-50">
+                      <X className="w-6 h-6" />
+                      <span className="sr-only">Fechar</span>
                   </SheetClose>
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
+
+                  {/* Links Gigantes Centralizados */}
+                  <div className="flex flex-col gap-8 items-center w-full max-w-sm px-6">
+                      {navLinks.map((link, index) => (
+                      <button
+                          key={link.name}
+                          onClick={() => scrollToSection(link.id)}
+                          // Forçando cor do texto para garantir contraste no fundo bege
+                          className="text-3xl md:text-4xl font-bold text-[#17191a]/80 hover:text-brand-orange transition-colors text-center w-full py-2 group flex items-center justify-center gap-3"
+                          style={{ animationDelay: `${index * 50}ms` }}
+                      >
+                          {link.name}
+                          <ArrowRight className="w-6 h-6 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-brand-orange" />
+                      </button>
+                      ))}
+                  </div>
+
+                  {/* Divisor */}
+                  <div className="w-16 h-px bg-[#17191a]/10 my-10" />
+
+                  {/* CTA Principal Mobile */}
+                  <div className="flex flex-col gap-4 w-full max-w-xs px-6">
+                      <Button 
+                          className="w-full h-14 text-lg rounded-full bg-gradient-brand text-white shadow-2xl font-bold"
+                          onClick={() => {
+                              setIsMobileMenuOpen(false);
+                              setIsDemoOpen(true);
+                          }}
+                      >
+                          Iniciar Consultoria
+                      </Button>
+                      
+                      <p className="text-center text-sm text-[#17191a]/60 mt-4 font-medium">
+                          Bas3 AI Infrastructure
+                      </p>
+                  </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
+
+      <DemoDialog isOpen={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
     </header>
   );
 };

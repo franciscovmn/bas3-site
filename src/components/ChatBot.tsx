@@ -1,223 +1,245 @@
 import { useState, useRef, useEffect } from "react";
+import { Send, Bot, RefreshCcw, Sparkles, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { X, Send, Bot, User, Loader2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import FloatingChatButton from "./FloatingChatButton";
+import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
 
-interface ChatBotProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
+const STARTER_QUESTIONS = [
+  "Como a IA funciona?",
+  "Quero ver uma demo",
+  "Preços e Planos",
+  "Falar com humano"
+];
 
-const ChatBot = ({ isOpen, onClose }: ChatBotProps) => {
+const ChatBot = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Olá! 👋 Sou a IA da BAS3, sua assistente especializada em infraestrutura de IA para empresas.\n\nPosso ajudar você com:\n• Análise de processos para automação\n• Casos de uso de IA para seu negócio\n• Demonstrações técnicas\n• Orçamentos personalizados\n• Agendamento de consultorias\n\nComo posso transformar sua empresa hoje?"
-    }
+      content: "Olá! Sou a inteligência da Bas3. Como posso ajudar a otimizar sua empresa hoje?",
+    },
   ]);
-
-  const quickQuestions = [
-    "Quais casos de uso de IA vocês oferecem?",
-    "Quanto tempo leva a implementação?",
-    "Como funciona o processo?",
-    "Quero agendar uma demonstração"
-  ];
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
+  
+  // Refs para controle de scroll e foco
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const isMobile = useIsMobile();
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
+  // ROLAGEM AUTOMÁTICA: Sempre que 'messages' mudar, rola para o fim
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (scrollRef.current) {
+      const scrollContainer = scrollRef.current;
+      scrollContainer.scrollTo({
+        top: scrollContainer.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [messages, isOpen]);
 
-  const sendMessage = async () => {
-    if (!input.trim() || isLoading) return;
+  // Foco automático no desktop
+  useEffect(() => {
+    if (isOpen && !isMobile) {
+      setTimeout(() => inputRef.current?.focus(), 300);
+    }
+  }, [isOpen, isMobile]);
 
-    const userMessage = input.trim();
+  const handleSend = async (text = input) => {
+    if (!text.trim()) return;
+
+    const userMessage = { role: "user" as const, content: text };
+    setMessages((prev) => [...prev, userMessage]);
     setInput("");
-    
-    setMessages(prev => [...prev, { role: "user", content: userMessage }]);
     setIsLoading(true);
 
-    try {
-      const response = await fetch(
-        "https://bossycaracal-n8n.cloudfy.cloud/webhook/57a4dce2-6183-49fa-8330-0971d014230a",
+    // Simulação de resposta (Substituir por chamada real à API)
+    setTimeout(() => {
+      setMessages((prev) => [
+        ...prev,
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ message: userMessage }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Falha na comunicação");
-      }
-
-      const text = await response.text();
-      
-      setMessages(prev => [
-        ...prev,
-        { 
-          role: "assistant", 
-          content: text || "Desculpe, não consegui processar sua mensagem. Tente novamente."
-        }
+          role: "assistant",
+          content: "Entendi! Nossa tecnologia personaliza soluções de IA especificamente para esse cenário. Gostaria de ver um caso de uso similar?",
+        },
       ]);
-    } catch (error) {
-      console.error("Error:", error);
-      toast({
-        title: "Erro ao enviar mensagem",
-        description: "Não foi possível conectar ao assistente. Tente novamente.",
-        variant: "destructive",
-      });
-      
-      setMessages(prev => [
-        ...prev,
-        { 
-          role: "assistant", 
-          content: "Desculpe, estou tendo problemas de conexão. Por favor, entre em contato pelo WhatsApp ou email."
-        }
-      ]);
-    } finally {
       setIsLoading(false);
-    }
+    }, 1500);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
+    if (e.key === "Enter") handleSend();
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-      <Card className="w-full md:max-w-2xl h-[100vh] md:h-[80vh] flex flex-col bg-background border-border md:rounded-2xl rounded-none shadow-2xl">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 md:p-6 border-b border-border bg-gradient-brand md:rounded-t-2xl"> {/* <-- ADICIONEI md:rounded-t-2xl */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur">
-              <Bot className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h3 className="font-bold text-white">Assistente BAS3</h3>
-              <p className="text-xs text-white/80">Online agora</p>
-            </div>
-          </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onClose}
-            className="text-white hover:bg-white/20"
-          >
-            <X className="h-5 w-5" />
-          </Button>
-        </div>
+    <>
+      <div
+        className={cn(
+          "fixed z-[100] transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1)",
+          // MOBILE: Ocupa tela cheia, mas com margem segura
+          isMobile 
+            ? "inset-0 bg-background/80 backdrop-blur-sm flex flex-col justify-end" 
+            : "bottom-24 right-6 w-[380px]",
+          isOpen
+            ? "translate-y-0 opacity-100 pointer-events-auto scale-100"
+            : "translate-y-10 opacity-0 pointer-events-none scale-95",
+        )}
+      >
+        <Card className={cn(
+          "border shadow-card overflow-hidden flex flex-col bg-background relative",
+          isMobile ? "h-[100dvh] w-full rounded-none border-0" : "h-[600px] max-h-[80vh] rounded-2xl"
+        )}>
+          
+          {/* CABEÇALHO COM IDENTIDADE BAS3 */}
+          <div className="relative bg-gradient-brand p-4 shrink-0 shadow-md">
+             {/* Botão de fechar no mobile */}
+            {isMobile && (
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => setIsOpen(false)}
+                className="absolute right-2 top-2 text-white hover:bg-white/20 rounded-full z-10"
+              >
+                <ChevronDown className="w-6 h-6" />
+              </Button>
+            )}
 
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`flex gap-3 ${
-                message.role === "user" ? "flex-row-reverse" : "flex-row"
-              } animate-slide-up`}
-            >
-              <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                  message.role === "user"
-                    ? "bg-gradient-brand"
-                    : "bg-muted"
-                }`}
-              >
-                {message.role === "user" ? (
-                  <User className="h-4 w-4 text-white" />
-                ) : (
-                  <Bot className="h-4 w-4 text-foreground" />
-                )}
+            <div className="relative flex items-center gap-3 pt-2 md:pt-0">
+              <div className="bg-white/20 p-2 rounded-lg backdrop-blur-md border border-white/10 shadow-sm">
+                <Bot className="w-6 h-6 text-white" />
               </div>
-              <div
-                className={`max-w-[80%] md:max-w-[70%] rounded-2xl px-4 py-3 ${
-                  message.role === "user"
-                    ? "bg-gradient-brand text-white"
-                    : "bg-muted text-foreground"
-                }`}
-              >
-                <p className="text-sm md:text-base whitespace-pre-wrap break-words">
-                  {message.content}
+              <div>
+                <h3 className="font-bold text-white text-lg leading-tight font-sans">Bas3 AI</h3>
+                <p className="text-white/90 text-xs flex items-center gap-1.5">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-400"></span>
+                  </span>
+                  Online agora
                 </p>
               </div>
-            </div>
-          ))}
-          {isLoading && (
-            <div className="flex gap-3 animate-slide-up">
-              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                <Bot className="h-4 w-4" />
-              </div>
-              <div className="bg-muted rounded-2xl px-4 py-3">
-                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-              </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Input */}
-        <div className="p-4 md:p-6 border-t border-border bg-background space-y-3 md:rounded-b-2xl"> {/* <-- ADICIONEI md:rounded-b-2xl */}
-          {/* Quick Questions */}
-          {messages.length === 1 && (
-            <div className="flex flex-wrap gap-2">
-              {quickQuestions.map((question, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    setInput(question);
-                    setTimeout(() => sendMessage(), 100);
-                  }}
-                  className="px-3 py-1.5 text-xs rounded-full bg-muted hover:bg-accent/10 hover:text-accent border border-border hover:border-accent/50 transition-all"
-                  disabled={isLoading}
+              
+              {/* Botão de Reset (Desktop) */}
+              {!isMobile && (
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="ml-auto text-white/80 hover:text-white hover:bg-white/20 rounded-full transition-colors"
+                  onClick={() => setMessages([{role: 'assistant', content: 'Olá! Sou a inteligência da Bas3. Como posso ajudar a otimizar sua empresa hoje?'}])}
+                  title="Reiniciar conversa"
                 >
-                  {question}
-                </button>
-              ))}
+                  <RefreshCcw className="w-4 h-4" />
+                </Button>
+              )}
             </div>
-          )}
-          
-          <div className="flex gap-2">
-            <Input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Digite sua mensagem..."
-              className="flex-1 bg-muted border-0 focus-visible:ring-accent"
-              disabled={isLoading}
-            />
-            <Button
-              onClick={sendMessage}
-              disabled={!input.trim() || isLoading}
-              className="bg-gradient-brand hover:opacity-90 text-white border-0 px-6"
-            >
-              <Send className="h-5 w-5" />
-            </Button>
           </div>
-        </div>
-      </Card>
-    </div>
+
+          {/* ÁREA DE MENSAGENS (SCROLLÁVEL) */}
+          <div 
+            ref={scrollRef}
+            className="flex-1 overflow-y-auto p-4 space-y-6 bg-secondary/30 scroll-smooth"
+          >
+            {messages.map((msg, index) => (
+              <div
+                key={index}
+                className={cn(
+                  "flex w-full animate-fade-in",
+                  msg.role === "user" ? "justify-end" : "justify-start"
+                )}
+              >
+                <div
+                  className={cn(
+                    "max-w-[85%] px-4 py-3 text-sm shadow-sm relative group font-sans leading-relaxed",
+                    msg.role === "user"
+                      ? "bg-gradient-brand text-white rounded-2xl rounded-tr-sm" // Identidade Visual Bas3
+                      : "bg-white dark:bg-card text-foreground border border-border/50 rounded-2xl rounded-tl-sm"
+                  )}
+                >
+                  {msg.role === 'assistant' && (
+                    <Sparkles className="w-3 h-3 text-brand-orange absolute -top-4 -left-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  )}
+                  {msg.content}
+                </div>
+              </div>
+            ))}
+
+            {/* Indicador de Digitação */}
+            {isLoading && (
+              <div className="flex justify-start animate-fade-in">
+                <div className="bg-white dark:bg-card border border-border px-4 py-4 rounded-2xl rounded-tl-sm shadow-sm flex gap-1 items-center">
+                  <span className="w-2 h-2 bg-brand-orange/60 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                  <span className="w-2 h-2 bg-brand-orange/60 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                  <span className="w-2 h-2 bg-brand-orange/60 rounded-full animate-bounce"></span>
+                </div>
+              </div>
+            )}
+            
+            {/* Espaço extra no final para garantir que a última mensagem não fique colada */}
+            <div className="h-2" />
+          </div>
+
+          {/* RODAPÉ E INPUT */}
+          <div className="p-4 bg-background border-t border-border shrink-0">
+            
+            {/* Chips de Sugestão */}
+            {messages.length < 3 && !isLoading && (
+              <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-hide -mx-2 px-2 mb-1">
+                {STARTER_QUESTIONS.map((q, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleSend(q)}
+                    className="whitespace-nowrap text-xs bg-secondary hover:bg-brand-orange/10 hover:text-brand-orange text-muted-foreground px-3 py-2 rounded-lg transition-all border border-transparent hover:border-brand-orange/20 font-medium"
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <div className="relative flex items-center gap-2">
+              <Input
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyPress}
+                placeholder="Digite sua mensagem..."
+                // text-[16px] impede zoom no iOS
+                className="pr-12 h-12 rounded-full bg-secondary/50 border-input focus-visible:ring-brand-orange text-[16px] shadow-inner" 
+                disabled={isLoading}
+              />
+              <Button
+                onClick={() => handleSend()}
+                disabled={isLoading || !input.trim()}
+                size="icon"
+                className={cn(
+                  "absolute right-1.5 w-9 h-9 rounded-full transition-all shadow-sm",
+                  input.trim() 
+                    ? "bg-gradient-brand text-white hover:opacity-90" 
+                    : "bg-transparent text-muted-foreground hover:bg-transparent shadow-none"
+                )}
+              >
+                <Send className="w-4 h-4" />
+              </Button>
+            </div>
+            
+            <div className="text-center mt-3">
+              <span className="text-[10px] text-muted-foreground flex items-center justify-center gap-1 opacity-70">
+                Powered by <span className="font-bold text-foreground">Bas3 AI</span>
+              </span>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      <FloatingChatButton onClick={() => setIsOpen(!isOpen)} isOpen={isOpen} />
+    </>
   );
 };
 

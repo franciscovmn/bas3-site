@@ -1,43 +1,43 @@
-import { useState } from "react";
-import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
-import HowItWorks from "@/components/HowItWorks";
 import UseCases from "@/components/UseCases";
-import FAQ from "@/components/FAQ";
+import HowItWorks from "@/components/HowItWorks";
 import CTASection from "@/components/CTASection";
-import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 import ChatBot from "@/components/ChatBot";
-import FloatingChatButton from "@/components/FloatingChatButton";
-import DemoDialog from "@/components/DemoDialog";
+import FAQ from "@/components/FAQ";
 
 const Index = () => {
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [isDemoOpen, setIsDemoOpen] = useState(false);
-
   return (
-    <>
+    <div className="min-h-screen bg-background selection:bg-brand-orange/20 selection:text-brand-black">
       <Header />
-      <div className="min-h-screen bg-background">
-        <Hero 
-          onOpenChat={() => setIsChatOpen(true)} 
-          onOpenDemo={() => setIsDemoOpen(true)}
-        />
+      
+      <main>
+        <Hero />
+        
+        {/* Inverti a ordem: Primeiro mostramos CASOS DE USO (Resultados) para gerar desejo */}
+        <div className="relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background pointer-events-none" />
+          <UseCases />
+        </div>
+
+        {/* Depois explicamos COMO a tecnologia (Features) entrega esses resultados */}
         <Features />
-        <HowItWorks />
-        <UseCases />
+
+        {/* Explicamos o PROCESSO (Passa segurança de que não somos amadores) */}
+        <div id="methodology">
+          <HowItWorks />
+        </div>
+
         <FAQ />
-        <CTASection onOpenChat={() => setIsChatOpen(true)} />
-        <Contact />
-        <Footer />
         
-        <ChatBot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
-        <DemoDialog isOpen={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
-        
-        {!isChatOpen && <FloatingChatButton onClick={() => setIsChatOpen(true)} />}
-      </div>
-    </>
+        <CTASection />
+      </main>
+
+      <Footer />
+      <ChatBot />
+    </div>
   );
 };
 
