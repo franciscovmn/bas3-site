@@ -48,13 +48,13 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-2 text-muted-foreground">
                 <Phone className="h-4 w-4 text-accent" />
-                <a href="https://wa.me/5583999007432" className="hover:text-accent transition-colors">
+                <a href="https://wa.me/5583993869595" className="hover:text-accent transition-colors">
                   +55 83 99900-7432
                 </a>
               </li>
             </ul>
             <div className="flex gap-3 mt-4">
-              <a 
+{/*               <a 
                 href="https://www.linkedin.com/company/bas3" 
                 target="_blank"
                 rel="noopener noreferrer"
@@ -62,9 +62,9 @@ const Footer = () => {
                 aria-label="LinkedIn"
               >
                 <Linkedin className="h-4 w-4" />
-              </a>
+              </a> */}
               <a 
-                href="https://www.instagram.com/bas3.automacao" 
+                href="https://www.instagram.com/somosbas3/" 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-8 h-8 rounded-full bg-muted flex items-center justify-center hover:bg-accent/20 hover:text-accent transition-all"

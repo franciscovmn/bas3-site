@@ -41,7 +41,7 @@ const CTASection = ({ onOpenChat }: CTASectionProps) => {
               Falar com Nossa IA
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <a href="https://wa.me/5583999007432" target="_blank" rel="noopener noreferrer">
+            <a href="https://wa.me/5583993869595" target="_blank" rel="noopener noreferrer">
               <Button
                 size="lg"
                 variant="outline"

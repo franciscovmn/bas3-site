@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Mail, MessageCircle } from "lucide-react";
 
 const Contact = () => {
-  const whatsappNumber = "5583999007432";
+  const whatsappNumber = "5583993869595";
   const email = "contato@somosbas3.com.br";
 
   const handleWhatsApp = () => {
