@@ -49,7 +49,7 @@ const Footer = () => {
               <li className="flex items-center gap-2 text-muted-foreground">
                 <Phone className="h-4 w-4 text-accent" />
                 <a href="https://wa.me/5583993869595" className="hover:text-accent transition-colors">
-                  +55 83 99900-7432
+                  +55 83 99386-9595
                 </a>
               </li>
             </ul>

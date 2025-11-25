@@ -1,6 +1,6 @@
 import Hero from "@/components/Hero";
-import Features from "@/components/Features";
 import UseCases from "@/components/UseCases";
+import Features from "@/components/Features"; // Importante: Trazer de volta
 import HowItWorks from "@/components/HowItWorks";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
@@ -9,35 +9,37 @@ import ChatBot from "@/components/ChatBot";
 import FAQ from "@/components/FAQ";
 
 const Index = () => {
-  // Handler to open the chat (passed to CTASection)
-  const handleOpenChat = () => {
-    // TODO: implement chat opening logic or integrate with ChatBot API
-    // For now it's a no-op to satisfy the prop requirement
-  };
-
   return (
     <div className="min-h-screen bg-background selection:bg-brand-orange/20 selection:text-brand-black">
       <Header />
       
       <main>
         <Hero />
-        {/* Inverti a ordem: Primeiro mostramos CASOS DE USO (Resultados) para gerar desejo */}
-        <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background pointer-events-none" />
+        
+        {/* Animação */}
+
+        {/* Seção: ATUAÇÃO (Pilares) */}
+        <div id="atuacao">
           <UseCases />
         </div>
 
-        {/* Depois explicamos COMO a tecnologia (Features) entrega esses resultados */}
-        <Features />
-
-        {/* Explicamos o PROCESSO (Passa segurança de que não somos amadores) */}
+        {/* Seção: DIFERENCIAIS (Tecnologia) - Trazida de volta */}
+        <div id="diferenciais">
+          <Features />
+        </div>
+        
+        {/* Seção: METODOLOGIA */}
         <div id="methodology">
           <HowItWorks />
         </div>
 
-        <FAQ />
+        <div id="faq">
+          <FAQ />
+        </div>
         
-        <CTASection onOpenChat={handleOpenChat} />
+        <div id="contato">
+          <CTASection />
+        </div>
       </main>
 
       <Footer />

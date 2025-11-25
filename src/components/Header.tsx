@@ -27,9 +27,9 @@ const Header = () => {
   };
 
   const navLinks = [
+    { name: "Atuação", id: "#atuacao" },
+    { name: "Diferenciais", id: "#diferenciais" },
     { name: "Metodologia", id: "#methodology" },
-    { name: "Atuação", id: "#features" },
-    { name: "Diferenciais", id: "#features" },
     { name: "FAQ", id: "#faq" },
   ];
 
@@ -43,12 +43,12 @@ const Header = () => {
     >
       <div className="container px-4 md:px-6 mx-auto flex items-center justify-between relative">
         
-        {/* 1. LOGO (Esquerda) */}
+        {/* 1. LOGO */}
         <div className="flex items-center gap-2 cursor-pointer z-50" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
           <img src={logoBlack} alt="Bas3 Logo" className="h-8 w-auto object-contain" />
         </div>
 
-        {/* 2. NAVEGAÇÃO DESKTOP (Centralizada) */}
+        {/* 2. NAVEGAÇÃO DESKTOP */}
         <nav className="hidden md:flex items-center gap-8 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
           {navLinks.map((link) => (
             <button
@@ -62,16 +62,18 @@ const Header = () => {
           ))}
         </nav>
 
-        {/* 3. AÇÕES (Direita) */}
+        {/* 3. AÇÕES */}
         <div className="flex items-center gap-4 z-50">
+          
+          {/* BOTÃO DESKTOP ATUALIZADO */}
           <Button 
-            className="hidden md:flex rounded-full bg-foreground text-background hover:bg-foreground/80 px-6 font-bold shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5"
-            onClick={() => setIsDemoOpen(true)}
+            className="hidden md:flex rounded-full bg-gradient-brand text-white hover:opacity-90 px-6 font-bold shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 border-0"
+            onClick={() => scrollToSection("#contato")}
           >
-            Consultoria
+            Começar Agora
           </Button>
 
-          {/* MENU MOBILE TRIGGER */}
+          {/* MENU MOBILE */}
           <div className="md:hidden">
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
@@ -80,25 +82,20 @@ const Header = () => {
                 </Button>
               </SheetTrigger>
               
-              {/* MENU TELA CHEIA (OVERLAY) */}
-              {/* CORREÇÃO: bg-[#fefbe5] força o BEGE. text-[#17191a] força o PRETO/CHUMBO. */}
               <SheetContent 
                   side="top" 
                   className="w-full h-[100dvh] bg-[#fefbe5] border-none p-0 flex flex-col items-center justify-center animate-in fade-in slide-in-from-top-5 duration-300 [&>button:last-child]:hidden"
               >
-                  {/* Botão Fechar */}
                   <SheetClose className="absolute right-4 top-6 p-2 rounded-full bg-black/5 hover:bg-black/10 text-[#17191a] transition-colors cursor-pointer z-50">
                       <X className="w-6 h-6" />
                       <span className="sr-only">Fechar</span>
                   </SheetClose>
 
-                  {/* Links Gigantes Centralizados */}
                   <div className="flex flex-col gap-8 items-center w-full max-w-sm px-6">
                       {navLinks.map((link, index) => (
                       <button
                           key={link.name}
                           onClick={() => scrollToSection(link.id)}
-                          // Forçando cor do texto para garantir contraste no fundo bege
                           className="text-3xl md:text-4xl font-bold text-[#17191a]/80 hover:text-brand-orange transition-colors text-center w-full py-2 group flex items-center justify-center gap-3"
                           style={{ animationDelay: `${index * 50}ms` }}
                       >
@@ -108,19 +105,15 @@ const Header = () => {
                       ))}
                   </div>
 
-                  {/* Divisor */}
                   <div className="w-16 h-px bg-[#17191a]/10 my-10" />
 
-                  {/* CTA Principal Mobile */}
+                  {/* BOTÃO MOBILE ATUALIZADO */}
                   <div className="flex flex-col gap-4 w-full max-w-xs px-6">
                       <Button 
-                          className="w-full h-14 text-lg rounded-full bg-gradient-brand text-white shadow-2xl font-bold"
-                          onClick={() => {
-                              setIsMobileMenuOpen(false);
-                              setIsDemoOpen(true);
-                          }}
+                          className="w-full h-14 text-lg rounded-full bg-gradient-brand text-white shadow-2xl font-bold border-0"
+                          onClick={() => scrollToSection("#contato")}
                       >
-                          Iniciar Consultoria
+                          Começar Agora
                       </Button>
                       
                       <p className="text-center text-sm text-[#17191a]/60 mt-4 font-medium">
